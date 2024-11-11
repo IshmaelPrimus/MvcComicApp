@@ -10,22 +10,35 @@ using MvcComic.Models;
 
 namespace MvcComic.Controllers
 {
-    public class ComicsController : Controller
+    public class ComicController : Controller
     {
         private readonly MvcComicContext _context;
 
-        public ComicsController(MvcComicContext context)
+        public ComicController(MvcComicContext context)
         {
             _context = context;
         }
 
-        // GET: Comics
-        public async Task<IActionResult> Index()
+        // GET: Comic
+        public async Task<IActionResult> Index(string searchString)
         {
-            return View(await _context.Comic.ToListAsync());
+            if (_context.Comic == null)
+            {
+                return Problem("Entity set 'MvcMovieContext.Movie'  is null.");
+            }
+
+            var movies = from m in _context.Comic
+                         select m;
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                movies = movies.Where(s => s.Title!.ToUpper().Contains(searchString.ToUpper()));
+            }
+
+            return View(await movies.ToListAsync());
         }
 
-        // GET: Comics/Details/5
+        // GET: Comic/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -43,13 +56,13 @@ namespace MvcComic.Controllers
             return View(comic);
         }
 
-        // GET: Comics/Create
+        // GET: Comic/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Comics/Create
+        // POST: Comic/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -65,7 +78,7 @@ namespace MvcComic.Controllers
             return View(comic);
         }
 
-        // GET: Comics/Edit/5
+        // GET: Comic/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -81,7 +94,7 @@ namespace MvcComic.Controllers
             return View(comic);
         }
 
-        // POST: Comics/Edit/5
+        // POST: Comic/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -116,7 +129,7 @@ namespace MvcComic.Controllers
             return View(comic);
         }
 
-        // GET: Comics/Delete/5
+        // GET: Comic/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -134,7 +147,7 @@ namespace MvcComic.Controllers
             return View(comic);
         }
 
-        // POST: Comics/Delete/5
+        // POST: Comic/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
