@@ -24,18 +24,18 @@ namespace MvcComic.Controllers
         {
             if (_context.Comic == null)
             {
-                return Problem("Entity set 'MvcMovieContext.Movie'  is null.");
+                return Problem("Entity set 'MvcComicContext.Comic'  is null.");
             }
 
-            var movies = from m in _context.Comic
+            var comics = from m in _context.Comic
                          select m;
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                movies = movies.Where(s => s.Title!.ToUpper().Contains(searchString.ToUpper()));
+                comics = comics.Where(s => s.Title!.ToUpper().Contains(searchString.ToUpper()));
             }
 
-            return View(await movies.ToListAsync());
+            return View(await comics.ToListAsync());
         }
 
         // GET: Comic/Details/5
