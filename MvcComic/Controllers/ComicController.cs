@@ -19,23 +19,38 @@ namespace MvcComic.Controllers
             _context = context;
         }
 
-        // GET: Comic
-        public async Task<IActionResult> Index(string searchString)
+        // GET: Comics
+        public async Task<IActionResult> Index(string comicGenre, string searchString)
         {
             if (_context.Comic == null)
             {
                 return Problem("Entity set 'MvcComicContext.Comic'  is null.");
             }
 
+            // Use LINQ to get list of genres.
+            IQueryable<string> genreQuery = from m in _context.Comic
+                                            orderby m.Genre
+                                            select m.Genre;
             var comics = from m in _context.Comic
                          select m;
 
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(searchString))
             {
                 comics = comics.Where(s => s.Title!.ToUpper().Contains(searchString.ToUpper()));
             }
 
-            return View(await comics.ToListAsync());
+            if (!string.IsNullOrEmpty(comicGenre))
+            {
+                comics = comics.Where(x => x.Genre == comicGenre);
+            }
+
+            var comicGenreVM = new ComicGenreViewModel
+            {
+                Genres = new SelectList(await genreQuery.Distinct().ToListAsync()),
+                Comics = await comics.ToListAsync()
+            };
+
+            return View(comicGenreVM);
         }
 
         // GET: Comic/Details/5
