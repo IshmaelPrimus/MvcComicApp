@@ -82,7 +82,7 @@ namespace MvcComic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Issue,Genre,Price")] Comic comic)
+        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Issue,Genre,Price,Grading")] Comic comic)
         {
             if (ModelState.IsValid)
             {
@@ -114,7 +114,7 @@ namespace MvcComic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Issue,Genre,Price")] Comic comic)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Issue,Genre,Price,Grading")] Comic comic)
         {
             if (id != comic.Id)
             {

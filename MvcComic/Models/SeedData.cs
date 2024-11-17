@@ -27,6 +27,7 @@ public static class SeedData
                     ReleaseDate = DateTime.Parse("1989-2-12"),
                     Issue = 1,
                     Genre = "Romantic Comedy",
+                    Grading = 9,
                     Price = 7.99M
                 },
                 new Comic
@@ -35,6 +36,7 @@ public static class SeedData
                     ReleaseDate = DateTime.Parse("1984-3-13"),
                     Genre = "Comedy",
                     Issue = 2,
+                    Grading = 8,
                     Price = 8.99M
                 },
                 new Comic
@@ -43,6 +45,7 @@ public static class SeedData
                     ReleaseDate = DateTime.Parse("1986-2-23"),
                     Genre = "Comedy",
                     Issue = 3,
+                    Grading = 7,
                     Price = 9.99M
                 },
                 new Comic
@@ -51,6 +54,7 @@ public static class SeedData
                     ReleaseDate = DateTime.Parse("1959-4-15"),
                     Genre = "Western",
                     Issue = 4,
+                    Grading = 6,
                     Price = 3.99M
                 }
             );
