@@ -3,10 +3,10 @@ using System.Collections.Generic;
 
 namespace MvcComic.Models;
 
-public class ComicGenreViewModel
+public class ComicPublisherViewModel
 {
     public List<Comic>? Comics { get; set; }
-    public SelectList? Genres { get; set; }
-    public string? ComicGenre { get; set; }
+    public SelectList? Publisher { get; set; }
+    public string? ComicPublisher { get; set; }
     public string? SearchString { get; set; }
 }

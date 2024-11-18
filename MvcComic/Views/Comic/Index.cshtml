@@ -1,4 +1,4 @@
-﻿@model MvcComic.Models.ComicGenreViewModel
+﻿@model MvcComic.Models.ComicPublisherViewModel
 
 @{
     ViewData["Title"] = "Index";
@@ -12,7 +12,7 @@
 <form asp-controller="Comics" asp-action="Index" method="get">
     <p>
 
-        <select asp-for="ComicGenre" asp-items="Model.Genres">
+        <select asp-for="ComicPublisher" asp-items="Model.Publisher">
             <option value="">All</option>
         </select>
 
@@ -28,10 +28,13 @@
                 @Html.DisplayNameFor(model => model.Comics![0].Title)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Comics![0].Issue)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Comics![0].ReleaseDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Comics![0].Genre)
+                @Html.DisplayNameFor(model => model.Comics![0].Publisher)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Comics![0].Price)
@@ -50,10 +53,13 @@
                     @Html.DisplayFor(modelItem => item.Title)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.Issue)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => item.ReleaseDate)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Genre)
+                    @Html.DisplayFor(modelItem => item.Publisher)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Price)

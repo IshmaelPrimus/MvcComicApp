@@ -20,17 +20,17 @@ namespace MvcComic.Controllers
         }
 
         // GET: Comics
-        public async Task<IActionResult> Index(string comicGenre, string searchString)
+        public async Task<IActionResult> Index(string comicPublisher, string searchString)
         {
             if (_context.Comic == null)
             {
                 return Problem("Entity set 'MvcComicContext.Comic'  is null.");
             }
 
-            // Use LINQ to get list of genres.
-            IQueryable<string> genreQuery = from m in _context.Comic
-                                            orderby m.Genre
-                                            select m.Genre;
+            // Use LINQ to get list of Publishers.
+            IQueryable<string> publisherQuery = from m in _context.Comic
+                                            orderby m.Publisher
+                                            select m.Publisher;
             var comics = from m in _context.Comic
                          select m;
 
@@ -39,18 +39,18 @@ namespace MvcComic.Controllers
                 comics = comics.Where(s => s.Title!.ToUpper().Contains(searchString.ToUpper()));
             }
 
-            if (!string.IsNullOrEmpty(comicGenre))
+            if (!string.IsNullOrEmpty(comicPublisher))
             {
-                comics = comics.Where(x => x.Genre == comicGenre);
+                comics = comics.Where(x => x.Publisher == comicPublisher);
             }
 
-            var comicGenreVM = new ComicGenreViewModel
+            var comicPublisherVM = new ComicPublisherViewModel
             {
-                Genres = new SelectList(await genreQuery.Distinct().ToListAsync()),
+                Publisher = new SelectList(await publisherQuery.Distinct().ToListAsync()),
                 Comics = await comics.ToListAsync()
             };
 
-            return View(comicGenreVM);
+            return View(comicPublisherVM);
         }
 
         // GET: Comic/Details/5
@@ -82,7 +82,7 @@ namespace MvcComic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Issue,Genre,Price,Grading")] Comic comic)
+        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Issue,Publisher,Price,Grading")] Comic comic)
         {
             if (ModelState.IsValid)
             {
@@ -114,7 +114,7 @@ namespace MvcComic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Issue,Genre,Price,Grading")] Comic comic)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Issue,Publisher,Price,Grading")] Comic comic)
         {
             if (id != comic.Id)
             {

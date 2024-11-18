@@ -23,38 +23,38 @@ public static class SeedData
             context.Comic.AddRange(
                 new Comic
                 {
-                    Title = "When Harry Met Sally",
+                    Title = "Icon",
                     ReleaseDate = DateTime.Parse("1989-2-12"),
                     Issue = 1,
-                    Genre = "Romantic Comedy",
-                    Grading = 9,
+                    Publisher = "DC",
+                    Grading = 9.0M,
                     Price = 7.99M
                 },
                 new Comic
                 {
-                    Title = "Ghostbusters ",
+                    Title = "Hardware ",
                     ReleaseDate = DateTime.Parse("1984-3-13"),
-                    Genre = "Comedy",
+                    Publisher = "DC",
                     Issue = 2,
-                    Grading = 8,
+                    Grading = 8.0M,
                     Price = 8.99M
                 },
                 new Comic
                 {
-                    Title = "Ghostbusters 2",
+                    Title = "Icon",
                     ReleaseDate = DateTime.Parse("1986-2-23"),
-                    Genre = "Comedy",
+                    Publisher = "Comedy",
                     Issue = 3,
-                    Grading = 7,
+                    Grading = 7.0M,
                     Price = 9.99M
                 },
                 new Comic
                 {
-                    Title = "Rio Bravo",
+                    Title = "Static",
                     ReleaseDate = DateTime.Parse("1959-4-15"),
-                    Genre = "Western",
+                    Publisher = "DC",
                     Issue = 4,
-                    Grading = 6,
+                    Grading = 6.9M,
                     Price = 3.99M
                 }
             );

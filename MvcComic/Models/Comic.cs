@@ -12,18 +12,22 @@ public class Comic
     [Required] 
     public string? Title { get; set; }
 
+    // Remove ReleaseDate property
     [Display(Name = "Release Date")]
     [DataType(DataType.Date)]
     public DateTime ReleaseDate { get; set; }
 
     [Range(1, 1000)]
-    [DataType(DataType.Currency)]
+    [Column(TypeName = "int")]
     public int? Issue { get; set; }
 
+    // Add Bought property
+
+    // Change Genre property to Publisher
     [RegularExpression(@"^[A-Z]+[a-zA-Z\s]*$")]
     [Required]
     [StringLength(30)]
-    public string? Genre { get; set; }
+    public string? Publisher { get; set; }
 
     [Range(1, 100)]
     [DataType(DataType.Currency)]
@@ -31,6 +35,6 @@ public class Comic
     public decimal Price { get; set; }
 
     [Range(1, 100)]
-    [DataType(DataType.Currency)]
-    public int? Grading { get; set; }
+    [Column(TypeName = "decimal(18, 2)")]
+    public decimal Grading { get; set; }
 }
