@@ -10,11 +10,11 @@ using MvcComic.Models;
 
 namespace MvcComic.Controllers
 {
-    public class ComicController : Controller
+    public class ComicsController : Controller
     {
         private readonly MvcComicContext _context;
 
-        public ComicController(MvcComicContext context)
+        public ComicsController(MvcComicContext context)
         {
             _context = context;
         }
