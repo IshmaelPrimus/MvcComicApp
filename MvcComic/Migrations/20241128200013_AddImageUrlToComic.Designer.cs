@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MvcComic.Data;
 
@@ -11,9 +12,11 @@ using MvcComic.Data;
 namespace MvcComic.Migrations
 {
     [DbContext(typeof(MvcComicContext))]
-    partial class MvcComicContextModelSnapshot : ModelSnapshot
+    [Migration("20241128200013_AddImageUrlToComic")]
+    partial class AddImageUrlToComic
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
