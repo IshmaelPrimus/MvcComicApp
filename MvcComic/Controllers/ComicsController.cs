@@ -47,7 +47,7 @@ namespace MvcComic.Controllers
                 comics = comics.Where(x => x.Publisher == comicPublisher);
             }
 
-            var comicList = await comics.ToListAsync();
+        var comicList = await comics.ToListAsync();
 
             // Fetch image URL for each comic
             foreach (var comic in comicList)
@@ -94,12 +94,30 @@ namespace MvcComic.Controllers
         // POST: Comic/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Issue,Publisher,Price,Grading,ImageUrl")] Comic comic)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(comic);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(comic);
+        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Issue,Publisher,Price,Grading")] Comic comic)
+        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Issue,Publisher,Price,Grading,ImageUrl")] Comic comic)
         {
             if (ModelState.IsValid)
             {
+                // Fetch image URL for the new comic
+                if (!string.IsNullOrEmpty(comic.Title))
+                {
+                    comic.ImageUrl = await _comicVineService.GetIssueImageAsync(comic.Title, comic.Issue ?? 0);
+                }
+
                 _context.Add(comic);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -128,7 +146,7 @@ namespace MvcComic.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Issue,Publisher,Price,Grading")] Comic comic)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Issue,Publisher,Price,Grading,ImageUrl")] Comic comic)
         {
             if (id != comic.Id)
             {
