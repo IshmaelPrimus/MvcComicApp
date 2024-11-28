@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using MvcComic.Data;
 using MvcComic.Models;
+using MvcComic.Services; // Add this line to include the ComicVineService
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,7 +11,11 @@ builder.Services.AddDbContext<MvcComicContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-
+builder.Services.AddHttpClient<ComicVineService>(client =>
+{
+    client.BaseAddress = new Uri("https://comicvine.gamespot.com/api/");
+});
+builder.Services.AddScoped(sp => new ComicVineService(sp.GetRequiredService<HttpClient>(), "your_api_key_here")); // Replace with your actual API key
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

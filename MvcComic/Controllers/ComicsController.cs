@@ -7,16 +7,19 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcComic.Data;
 using MvcComic.Models;
+using MvcComic.Services;
 
 namespace MvcComic.Controllers
 {
     public class ComicsController : Controller
     {
         private readonly MvcComicContext _context;
+        private readonly ComicVineService _comicVineService;
 
-        public ComicsController(MvcComicContext context)
+        public ComicsController(MvcComicContext context, ComicVineService comicVineService)
         {
             _context = context;
+            _comicVineService = comicVineService;
         }
 
         // GET: Comics
@@ -24,13 +27,13 @@ namespace MvcComic.Controllers
         {
             if (_context.Comic == null)
             {
-                return Problem("Entity set 'MvcComicContext.Comic'  is null.");
+                return Problem("Entity set 'MvcComicContext.Comic' is null.");
             }
 
             // Use LINQ to get list of Publishers.
             IQueryable<string> publisherQuery = from m in _context.Comic
-                                            orderby m.Publisher
-                                            select m.Publisher;
+                                                orderby m.Publisher
+                                                select m.Publisher;
             var comics = from m in _context.Comic
                          select m;
 
@@ -44,10 +47,21 @@ namespace MvcComic.Controllers
                 comics = comics.Where(x => x.Publisher == comicPublisher);
             }
 
+            var comicList = await comics.ToListAsync();
+
+            // Fetch image URL for each comic
+            foreach (var comic in comicList)
+            {
+                if (!string.IsNullOrEmpty(comic.Title))
+                {
+                    comic.ImageUrl = await _comicVineService.GetIssueImageAsync(comic.Title, comic.Issue ?? 0);
+                }
+            }
+
             var comicPublisherVM = new ComicPublisherViewModel
             {
                 Publisher = new SelectList(await publisherQuery.Distinct().ToListAsync()),
-                Comics = await comics.ToListAsync()
+                Comics = comicList
             };
 
             return View(comicPublisherVM);
@@ -180,6 +194,13 @@ namespace MvcComic.Controllers
         private bool ComicExists(int id)
         {
             return _context.Comic.Any(e => e.Id == id);
+        }
+
+        // Call the GetIssueImageAsync method and pass the result to a view.
+        public async Task<IActionResult> GetIssueImage(string issueName, int issueNumber)
+        {
+            var imageUrl = await _comicVineService.GetIssueImageAsync(issueName, issueNumber);
+            return Json(new { imageUrl });
         }
     }
 }

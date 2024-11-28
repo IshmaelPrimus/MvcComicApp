@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
+namespace MvcComic.Services;
 public class ComicVineService
 {
     private readonly HttpClient _httpClient;
@@ -15,7 +16,8 @@ public class ComicVineService
 
     public async Task<string?> GetIssueImageAsync(string issueName, int issueNumber)
     {
-        var url = $"https://comicvine.gamespot.com/api/search/?api_key={_apiKey}&format=json&sort=name:asc&resources=issue&query=\"{issueName}\"&filter=name:{issueName},issue_number:{issueNumber}";
+        var query = $"\"{issueName} ({issueNumber})\"";
+        var url = $"https://comicvine.gamespot.com/api/search/?api_key={_apiKey}&format=json&sort=name:asc&resources=issue&query={query}&filter=name:{issueName},issue_number:{issueNumber}";
         var response = await _httpClient.GetAsync(url);
 
         if (response.IsSuccessStatusCode)
