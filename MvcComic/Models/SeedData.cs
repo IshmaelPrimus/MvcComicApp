@@ -28,7 +28,8 @@ public static class SeedData
                     Issue = 1,
                     Publisher = "DC",
                     Grading = 9.0M,
-                    Price = 7.99M
+                    Price = 7.99M,
+                    ImageUrl = "https://example.com/icon.jpg"
                 },
                 new Comic
                 {
@@ -37,7 +38,8 @@ public static class SeedData
                     Publisher = "DC",
                     Issue = 2,
                     Grading = 8.0M,
-                    Price = 8.99M
+                    Price = 8.99M,
+                    ImageUrl = "https://example.com/icon.jpg"
                 },
                 new Comic
                 {
@@ -46,7 +48,8 @@ public static class SeedData
                     Publisher = "Comedy",
                     Issue = 3,
                     Grading = 7.0M,
-                    Price = 9.99M
+                    Price = 9.99M,
+                    ImageUrl = "https://example.com/icon.jpg"
                 },
                 new Comic
                 {
@@ -55,7 +58,8 @@ public static class SeedData
                     Publisher = "DC",
                     Issue = 4,
                     Grading = 6.9M,
-                    Price = 3.99M
+                    Price = 3.99M,
+                    ImageUrl = "https://example.com/icon.jpg"
                 }
             );
             context.SaveChanges();
