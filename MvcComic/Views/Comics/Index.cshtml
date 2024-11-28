@@ -11,7 +11,6 @@
 </p>
 <form asp-controller="Comics" asp-action="Index" method="get">
     <p>
-
         <select asp-for="ComicPublisher" asp-items="Model.Publisher">
             <option value="">All</option>
         </select>
@@ -50,6 +49,7 @@
     </thead>
     <tbody>
         @foreach (var item in Model.Comics!)
+
         {
             <tr>
                 <td>
@@ -69,10 +69,17 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Grading)
-                </td>>
+                </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.ImageUrl)
-                </td>>
+                    @if (!string.IsNullOrEmpty(item.ImageUrl))
+                    {
+                        <img src="@item.ImageUrl" alt="Comic Image" class="img-thumbnail" style="max-width: 100px;" />
+                    }
+                    else
+                    {
+                        <p>No image available</p>
+                    }
+                </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
