@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcComic.Data;
 using MvcComic.Models;
+using Newtonsoft.Json.Linq;
 
 namespace MvcComic.Controllers
 {
@@ -18,6 +19,61 @@ namespace MvcComic.Controllers
         {
             _context = context;
         }
+
+        private readonly string _apiKey = "2194908e26505271c0a8b22937d61d9af0d9ac54";
+
+        [HttpGet]
+        [Route("Comics/GetComicImage")]
+        public async Task<IActionResult> GetComicImage(string issueName)
+        {
+            if (string.IsNullOrEmpty(_apiKey))
+            {
+                ViewData["ComicImageUrl"] = "API key is missing or invalid.";
+                return View("Details", new Comic { Title = issueName });
+            }
+
+            string url = $"https://comicvine.gamespot.com/api/issues/?api_key={_apiKey}&format=json&sort=name:asc&resources=issue&query=\"{issueName}\"&filter=name:{issueName}";
+
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.UserAgent.ParseAdd("MvcComicApp/1.0");
+
+                try
+                {
+                    HttpResponseMessage response = await client.GetAsync(url);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        string jsonResponse = await response.Content.ReadAsStringAsync();
+                        JObject data = JObject.Parse(jsonResponse);
+                        string imageUrl = data["results"]?.FirstOrDefault()?["image"]?["original_url"]?.ToString() ?? string.Empty;
+                        ViewData["ComicImageUrl"] = imageUrl;
+                    }
+                    else
+                    {
+                        string errorContent = await response.Content.ReadAsStringAsync();
+                        ViewData["ComicImageUrl"] = $"Error fetching data from API. Status Code: {response.StatusCode}, Content: {errorContent}";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ViewData["ComicImageUrl"] = $"Exception occurred while fetching data from API: {ex.Message}";
+                }
+            }
+
+            var comic = await _context.Comic.FirstOrDefaultAsync(m => m.Title == issueName);
+            if (comic == null)
+            {
+                return NotFound();
+            }
+
+            return View("Details", comic);
+        }
+
+
+
+
+
+
 
         // GET: Comics
         public async Task<IActionResult> Index()
@@ -60,7 +116,7 @@ namespace MvcComic.Controllers
             {
                 _context.Add(comic);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(GetComicImage), new { issueName = comic.Title });
             }
             return View(comic);
         }
