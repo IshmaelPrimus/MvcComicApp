@@ -77,5 +77,15 @@ public class ComicVineService
             return null;
         }
     }
+
+    internal async Task<string?> GetIssueImageAsync(string? title, int v, string apiKey)
+    {
+        throw new NotImplementedException();
+    }
+
+    internal async Task<string?> GetIssueImageAsync(object title, object value, string apiKey)
+    {
+        throw new NotImplementedException();
+    }
 }
 
