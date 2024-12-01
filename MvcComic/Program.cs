@@ -15,7 +15,7 @@ builder.Services.AddHttpClient<ComicVineService>(client =>
 {
     client.BaseAddress = new Uri("https://comicvine.gamespot.com/api/");
 });
-builder.Services.AddScoped(sp => new ComicVineService(sp.GetRequiredService<HttpClient>(), "your_api_key_here")); // Replace with your actual API key
+builder.Services.AddScoped(sp => new ComicVineService(sp.GetRequiredService<HttpClient>(), "2194908e26505271c0a8b22937d61d9af0d9ac54")); // Replace with your actual API key
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -28,6 +28,7 @@ using (var scope = app.Services.CreateScope())
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
+
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();

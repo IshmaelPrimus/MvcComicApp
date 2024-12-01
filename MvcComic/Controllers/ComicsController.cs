@@ -13,14 +13,56 @@ namespace MvcComic.Controllers
 {
     public class ComicsController : Controller
     {
-        private readonly MvcComicContext _context;
         private readonly ComicVineService _comicVineService;
+        private readonly string _apiKey = "2194908e26505271c0a8b22937d61d9af0d9ac54"; // Store securely in configuration
+        private readonly MvcComicContext _context;
 
         public ComicsController(MvcComicContext context, ComicVineService comicVineService)
         {
             _context = context;
             _comicVineService = comicVineService;
         }
+
+        [HttpGet]
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(string Title, int Issue)
+        {
+            if (string.IsNullOrEmpty(Title))
+            {
+                ModelState.AddModelError("", "Comic name is required.");
+                return View();
+            }
+
+            try
+            {
+                var imageUrl = await _comicVineService.GetIssueImageAsync(Title, Issue);
+                var newComic = new Comic
+                {
+                    Title = Title,
+                    Issue = Issue,
+                    ImageUrl = imageUrl,
+                    // Set other properties as needed, e.g., ReleaseDate, Publisher, etc.
+                };
+
+                _context.Comic.Add(newComic);
+                await _context.SaveChangesAsync();
+
+                ViewBag.ImageUrl = imageUrl;
+                ViewBag.ComicName = Title;
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Failed to fetch comic image.");
+            }
+
+            return View();
+        }
+
 
         // GET: Comics
         public async Task<IActionResult> Index(string comicPublisher, string searchString)
@@ -47,7 +89,7 @@ namespace MvcComic.Controllers
                 comics = comics.Where(x => x.Publisher == comicPublisher);
             }
 
-        var comicList = await comics.ToListAsync();
+            var comicList = await comics.ToListAsync();
 
             // Fetch image URL for each comic
             foreach (var comic in comicList)
@@ -86,44 +128,30 @@ namespace MvcComic.Controllers
         }
 
         // GET: Comic/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+        //public IActionResult Create()
+        //{
+        //    return View();
+        //}
 
         // POST: Comic/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         //[HttpPost]
         //[ValidateAntiForgeryToken]
         //public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Issue,Publisher,Price,Grading,ImageUrl")] Comic comic)
         //{
         //    if (ModelState.IsValid)
         //    {
+        //        // Fetch image URL for the new comic
+        //        if (!string.IsNullOrEmpty(comic.Title))
+        //        {
+        //            comic.ImageUrl = await _comicVineService.GetIssueImageAsync(comic.Title, comic.Issue ?? 0);
+        //        }
+
         //        _context.Add(comic);
         //        await _context.SaveChangesAsync();
         //        return RedirectToAction(nameof(Index));
         //    }
         //    return View(comic);
         //}
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,ReleaseDate,Issue,Publisher,Price,Grading,ImageUrl")] Comic comic)
-        {
-            if (ModelState.IsValid)
-            {
-                // Fetch image URL for the new comic
-                if (!string.IsNullOrEmpty(comic.Title))
-                {
-                    comic.ImageUrl = await _comicVineService.GetIssueImageAsync(comic.Title, comic.Issue ?? 0);
-                }
-
-                _context.Add(comic);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(comic);
-        }
 
         // GET: Comic/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -142,8 +170,6 @@ namespace MvcComic.Controllers
         }
 
         // POST: Comic/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Issue,Publisher,Price,Grading,ImageUrl")] Comic comic)
