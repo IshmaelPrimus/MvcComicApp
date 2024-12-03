@@ -45,7 +45,7 @@ namespace MvcComic.Controllers
                     {
                         string jsonResponse = await response.Content.ReadAsStringAsync();
                         JObject data = JObject.Parse(jsonResponse);
-                        string imageUrl = data["results"]?.FirstOrDefault()?["image"]?["original_url"]?.ToString() ?? string.Empty;
+                        string imageUrl = data["results"]?.FirstOrDefault()?["image"]?["thumb_url"]?.ToString() ?? string.Empty;
 
                         if (string.IsNullOrEmpty(imageUrl))
                         {
