@@ -11,4 +11,5 @@ public class Comic
     public int? Issue { get; set; }
     public string? Genre { get; set; }
     public decimal Price { get; set; }
+    public string? ImageUrl { get; set; }
 }

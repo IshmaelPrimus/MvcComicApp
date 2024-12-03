@@ -5,7 +5,7 @@
 namespace MvcComic.Migrations
 {
     /// <inheritdoc />
-    public partial class AddGenreColumn : Migration
+    public partial class AddImageUrlToComic : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

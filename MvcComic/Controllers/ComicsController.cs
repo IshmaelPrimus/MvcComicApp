@@ -87,11 +87,6 @@ namespace MvcComic.Controllers
 
 
 
-
-
-
-
-
         // GET: Comics
         public async Task<IActionResult> Index()
         {
