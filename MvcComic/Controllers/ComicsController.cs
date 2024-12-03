@@ -46,7 +46,23 @@ namespace MvcComic.Controllers
                         string jsonResponse = await response.Content.ReadAsStringAsync();
                         JObject data = JObject.Parse(jsonResponse);
                         string imageUrl = data["results"]?.FirstOrDefault()?["image"]?["original_url"]?.ToString() ?? string.Empty;
-                        ViewData["ComicImageUrl"] = imageUrl;
+
+                        if (string.IsNullOrEmpty(imageUrl))
+                        {
+                            ViewData["ComicImageUrl"] = "No image found for the specified issue.";
+                        }
+                        else
+                        {
+                            ViewData["ComicImageUrl"] = imageUrl;
+                        }
+
+                        var comic = await _context.Comic.FirstOrDefaultAsync(m => m.Title == issueName);
+                        if (comic != null)
+                        {
+                            comic.ImageUrl = imageUrl;
+                            _context.Update(comic);
+                            await _context.SaveChangesAsync();
+                        }
                     }
                     else
                     {
@@ -60,14 +76,15 @@ namespace MvcComic.Controllers
                 }
             }
 
-            var comic = await _context.Comic.FirstOrDefaultAsync(m => m.Title == issueName);
-            if (comic == null)
+            var comicDetails = await _context.Comic.FirstOrDefaultAsync(m => m.Title == issueName);
+            if (comicDetails == null)
             {
                 return NotFound();
             }
 
-            return View("Details", comic);
+            return View("Details", comicDetails);
         }
+
 
 
 
