@@ -152,6 +152,7 @@ namespace MvcComic.Controllers
         // POST: Comics/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        // POST: Comics/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Issue,Genre,Price")] Comic comic)
@@ -165,8 +166,21 @@ namespace MvcComic.Controllers
             {
                 try
                 {
+                    var existingComic = await _context.Comic.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
+                    if (existingComic == null)
+                    {
+                        return NotFound();
+                    }
+
+                    bool titleChanged = !string.Equals(existingComic.Title, comic.Title, StringComparison.OrdinalIgnoreCase);
+
                     _context.Update(comic);
                     await _context.SaveChangesAsync();
+
+                    if (titleChanged)
+                    {
+                        return RedirectToAction(nameof(GetComicImage), new { issueName = comic.Title });
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -183,6 +197,7 @@ namespace MvcComic.Controllers
             }
             return View(comic);
         }
+
 
         // GET: Comics/Delete/5
         public async Task<IActionResult> Delete(int? id)

@@ -45,10 +45,21 @@
     </div>
 </div>
 
+@if (!string.IsNullOrEmpty(Model.ImageUrl))
+{
+    <div class="row">
+        <div class="col-md-4">
+            <img src="@Model.ImageUrl" alt="Comic Image" class="img-fluid" />
+        </div>
+    </div>
+}
+
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
