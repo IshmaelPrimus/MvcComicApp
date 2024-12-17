@@ -1,0 +1,27 @@
+﻿@model MvcComic.Models.VolumeIssuesViewModel
+
+<h2>Volume: @Model.VolumeTitle</h2>
+
+@if (Model.Issues.Any())
+{
+    <ul>
+        @foreach (var issue in Model.Issues)
+        {
+            <li>
+                <img src="@issue.ImageUrl" alt="@issue.Title" />
+                <span>@issue.Title</span>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <p>No issues found for this volume.</p>
+}
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @ViewData["ErrorMessage"]
+    </div>
+}

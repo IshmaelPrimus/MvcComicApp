@@ -1,0 +1,40 @@
+﻿@model MvcComic.Models.VolumeIssuesViewModel
+
+@{
+    ViewData["Title"] = "Volume Search";
+}
+
+<h2>Volume Search</h2>
+
+<form asp-action="GetVolumeIssues" method="get">
+    <div class="form-group">
+        <label for="volumeName">Volume Name</label>
+        <input type="text" class="form-control" id="volumeName" name="volumeName" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Search</button>
+</form>
+
+@if (Model?.Issues != null && Model.Issues.Any())
+{
+    <h3>Volume: @Model.VolumeTitle</h3>
+    <ul>
+        @foreach (var issue in Model.Issues)
+        {
+            <li>
+                <img src="@issue.ImageUrl" alt="@issue.Title" />
+                <span>@issue.Title</span>
+            </li>
+        }
+    </ul>
+}
+else if (!string.IsNullOrEmpty(Model?.VolumeTitle))
+{
+    <p>No issues found for this volume.</p>
+}
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @ViewData["ErrorMessage"]
+    </div>
+}

@@ -23,6 +23,116 @@ namespace MvcComic.Controllers
         private readonly string _apiKey = "2194908e26505271c0a8b22937d61d9af0d9ac54";
 
         [HttpGet]
+        [Route("Comics/GetVolumeIssues")]
+        public async Task<IActionResult> GetVolumeIssues(string volumeName)
+        {
+            if (string.IsNullOrEmpty(_apiKey))
+            {
+                ViewData["ErrorMessage"] = "API key is missing or invalid.";
+                return View("VolumeIssues", new VolumeIssuesViewModel { VolumeTitle = volumeName });
+            }
+
+            if (string.IsNullOrEmpty(volumeName))
+            {
+                ViewData["ErrorMessage"] = "Volume name is required.";
+                return View("VolumeIssues", new VolumeIssuesViewModel { VolumeTitle = volumeName });
+            }
+
+            string volumeUrl = $"https://comicvine.gamespot.com/api/volumes/?api_key={_apiKey}&format=json&filter=name:{volumeName}";
+
+            using (HttpClient client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.UserAgent.ParseAdd("MvcComicApp/1.0");
+
+                try
+                {
+                    // First API call to get the volume ID
+                    HttpResponseMessage volumeResponse = await client.GetAsync(volumeUrl);
+                    if (volumeResponse.IsSuccessStatusCode)
+                    {
+                        string volumeJsonResponse = await volumeResponse.Content.ReadAsStringAsync();
+                        JObject volumeData = JObject.Parse(volumeJsonResponse);
+                        var volume = volumeData["results"]?.FirstOrDefault();
+
+                        if (volume == null)
+                        {
+                            ViewData["ErrorMessage"] = "No volume found for the specified name.";
+                            return View("VolumeIssues", new VolumeIssuesViewModel { VolumeTitle = volumeName });
+                        }
+
+                        string volumeId = volume["id"]?.ToString() ?? string.Empty;
+                        string volumeTitle = volume["name"]?.ToString() ?? string.Empty;
+
+                        // Second API call to get the issues of the volume
+                        string issuesUrl = $"https://comicvine.gamespot.com/api/issues/?api_key={_apiKey}&format=json&filter=volume:{volumeId}";
+                        List<Comic> issues = new List<Comic>();
+                        int offset = 0;
+                        bool hasMoreResults = true;
+
+                        while (hasMoreResults)
+                        {
+                            HttpResponseMessage issuesResponse = await client.GetAsync($"{issuesUrl}&offset={offset}");
+                            if (issuesResponse.IsSuccessStatusCode)
+                            {
+                                string issuesJsonResponse = await issuesResponse.Content.ReadAsStringAsync();
+                                JObject issuesData = JObject.Parse(issuesJsonResponse);
+                                var results = issuesData["results"]?.ToList();
+
+                                if (results == null || results.Count == 0)
+                                {
+                                    hasMoreResults = false;
+                                }
+                                else
+                                {
+                                    foreach (var result in results)
+                                    {
+                                        issues.Add(new Comic
+                                        {
+                                            Title = result["name"]?.ToString(),
+                                            ImageUrl = result["image"]?["thumb_url"]?.ToString()
+                                        });
+                                    }
+                                    offset += results.Count;
+                                }
+                            }
+                            else
+                            {
+                                string errorContent = await issuesResponse.Content.ReadAsStringAsync();
+                                ViewData["ErrorMessage"] = $"Error fetching data from API. Status Code: {issuesResponse.StatusCode}, Content: {errorContent}";
+                                return View("VolumeIssues", new VolumeIssuesViewModel { VolumeTitle = volumeTitle });
+                            }
+                        }
+
+                        var viewModel = new VolumeIssuesViewModel
+                        {
+                            VolumeTitle = volumeTitle,
+                            Issues = issues
+                        };
+
+                        return View("VolumeIssues", viewModel);
+                    }
+                    else
+                    {
+                        string errorContent = await volumeResponse.Content.ReadAsStringAsync();
+                        ViewData["ErrorMessage"] = $"Error fetching data from API. Status Code: {volumeResponse.StatusCode}, Content: {errorContent}";
+                        return View("VolumeIssues", new VolumeIssuesViewModel { VolumeTitle = volumeName });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    ViewData["ErrorMessage"] = $"Exception occurred while fetching data from API: {ex.Message}";
+                    return View("VolumeIssues", new VolumeIssuesViewModel { VolumeTitle = volumeName });
+                }
+            }
+        }
+
+
+
+
+
+
+
+        [HttpGet]
         [Route("Comics/GetComicImage")]
         public async Task<IActionResult> GetComicImage(string issueName)
         {
@@ -85,7 +195,14 @@ namespace MvcComic.Controllers
             return View("Details", comicDetails);
         }
 
-
+        public IActionResult VolumeSearch()
+        {
+            var viewModel = new VolumeIssuesViewModel
+            {
+                VolumeTitle = string.Empty // or provide a default value
+            };
+            return View(viewModel);
+        }
 
         // GET: Comics
         public async Task<IActionResult> Index()
