@@ -25,19 +25,13 @@
         <thead>
             <tr>
                 <th>
+                    @Html.DisplayNameFor(model => model.Volume)
+                </th>
+                <th>
                     @Html.DisplayNameFor(model => model.Title)
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.ReleaseDate)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Issue)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Genre)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Price)
+                    @Html.DisplayNameFor(model => model.IssueNumber)
                 </th>
                 <th>
                     Image
@@ -51,19 +45,13 @@
             {
                 <tr>
                     <td>
+                        @Html.DisplayFor(modelItem => issue.Volume)
+                    </td>
+                    <td>
                         @Html.DisplayFor(modelItem => issue.Title)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => issue.ReleaseDate)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => issue.Issue)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => issue.Genre)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => issue.Price)
+                        @Html.DisplayFor(modelItem => issue.IssueNumber)
                     </td>
                     <td>
                         @if (!string.IsNullOrEmpty(issue.ImageUrl))
@@ -81,3 +69,26 @@
             }
         </tbody>
     </table>
+
+@{
+    var successMessage = TempData["SuccessMessage"] as string;
+
+    var errorMessage = TempData["ErrorMessage"] as string;
+}
+
+@if (!string.IsNullOrEmpty(successMessage))
+
+{
+    <div class="alert alert-success">
+        @successMessage
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(errorMessage))
+
+{
+    <div class="alert alert-danger">
+        @errorMessage
+    </div>
+}
+

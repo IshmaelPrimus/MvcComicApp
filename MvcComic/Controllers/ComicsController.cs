@@ -88,6 +88,7 @@ namespace MvcComic.Controllers
                                     {
                                         issues.Add(new Comic
                                         {
+                                            Id = int.Parse(result["id"]?.ToString() ?? "0"),
                                             Title = result["name"]?.ToString(),
                                             IssueNumber = result["issue_number"]?.ToString(),
                                             ImageUrl = result["image"]?["thumb_url"]?.ToString()
@@ -197,14 +198,17 @@ namespace MvcComic.Controllers
             return View("Details", comicDetails);
         }
 
-        public IActionResult VolumeSearch()
+        public async Task<IActionResult> VolumeSearch()
         {
+            var comics = await _context.Comic.ToListAsync();
             var viewModel = new VolumeIssuesViewModel
             {
-                VolumeTitle = string.Empty // or provide a default value
+                VolumeTitle = string.Empty, // or provide a default value
+                Issues = comics
             };
             return View(viewModel);
         }
+
 
         // GET: Comics
         public async Task<IActionResult> Index()
@@ -235,6 +239,53 @@ namespace MvcComic.Controllers
         {
             return View();
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddSelectedIssue(string volumeTitle, string title, string issueNumber, string imageUrl)
+        {
+            // Log the incoming data
+            Console.WriteLine($"VolumeTitle={volumeTitle}, Title={title}, IssueNumber={issueNumber}, ImageUrl={imageUrl}");
+
+            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(issueNumber))
+            {
+                TempData["ErrorMessage"] = "Issue data is invalid.";
+                return RedirectToAction("VolumeSearch");
+            }
+
+            var existingIssue = await _context.Comic.FirstOrDefaultAsync(c =>
+                c.Title == title && c.IssueNumber == issueNumber);
+
+            if (existingIssue == null)
+            {
+                var newComic = new Comic
+                {
+                    Title = title,
+                    IssueNumber = issueNumber,
+                    ImageUrl = imageUrl,
+                    Volume = volumeTitle
+                };
+
+                _context.Comic.Add(newComic);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "The selected issue has been successfully added to the database.";
+            }
+            else
+            {
+                TempData["ErrorMessage"] = "The selected issue already exists in the database.";
+            }
+
+            return RedirectToAction("VolumeSearch");
+        }
+
+
+
+
+
+
+
+
+
 
         // POST: Comics/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.

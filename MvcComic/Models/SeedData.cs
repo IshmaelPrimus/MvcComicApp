@@ -23,38 +23,30 @@ public static class SeedData
             context.Comic.AddRange(
                 new Comic
                 {
-                    Title = "When Harry Met Sally",
-                    ReleaseDate = DateTime.Parse("1989-2-12"),
-                    Issue = 1,
-                    Genre = "Romantic Comedy",
-                    Price = 7.99M,
+                    Volume = "A",
+                    Title = "Test",
+                    IssueNumber = "1",
                     ImageUrl = "https://comicvine.gamespot.com/a/uploads/scale_avatar/0/3125/7709750-bat158.jpg"
                 },
                 new Comic
                 {
-                    Title = "Ghostbusters ",
-                    ReleaseDate = DateTime.Parse("1984-3-13"),
-                    Genre = "Comedy",
-                    Issue = 2,
-                    Price = 8.99M,
+                    Volume = "A",
+                    Title = "Test",
+                    IssueNumber = "2",
                     ImageUrl = "https://comicvine.gamespot.com/a/uploads/scale_avatar/0/3125/7709750-bat158.jpg"
                 },
                 new Comic
                 {
-                    Title = "Ghostbusters 2",
-                    ReleaseDate = DateTime.Parse("1986-2-23"),
-                    Genre = "Comedy",
-                    Issue = 3,
-                    Price = 9.99M,
+                    Volume = "A",
+                    Title = "Test",
+                    IssueNumber = "3",
                     ImageUrl = "https://comicvine.gamespot.com/a/uploads/scale_avatar/0/3125/7709750-bat158.jpg"
                 },
                 new Comic
                 {
-                    Title = "Rio Bravo",
-                    ReleaseDate = DateTime.Parse("1959-4-15"),
-                    Genre = "Western",
-                    Issue = 4,
-                    Price = 3.99M,
+                    Volume = "A",
+                    Title = "Test",
+                    IssueNumber = "4",
                     ImageUrl = "https://comicvine.gamespot.com/a/uploads/scale_avatar/0/3125/7709750-bat158.jpg"
                 }
             );

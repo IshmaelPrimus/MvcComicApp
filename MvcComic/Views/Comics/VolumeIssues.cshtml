@@ -28,40 +28,56 @@ else
 
 @model VolumeIssuesViewModel
 
-<h2>@Model.VolumeTitle</h2>
-
-@if (ViewData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">@ViewData["ErrorMessage"]</div>
+@{
+    ViewData["Title"] = "Volume Issues";
 }
 
-<form asp-action="VolumeSearch" method="post">
-    <table class="table">
-        <thead>
+<h2>@ViewData["Title"]</h2>
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Issue Number</th>
+            <th>Image</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var issue in Model.Issues)
+        {
             <tr>
-                <th>Select</th>
-                <th>Title</th>
-                <th>Issue Number</th>
-                <th>Image</th>
+                <td>@issue.Title</td>
+                <td>@issue.IssueNumber</td>
+                <td>
+                    <img src="@issue.ImageUrl" alt="@issue.Title" width="50" height="50" />
+                </td>
+                <td>
+                    <form asp-action="AddSelectedIssue" method="post">
+                        <input type="hidden" name="volumeTitle" value="@Model.VolumeTitle" />
+                        <input type="hidden" name="title" value="@issue.Title" />
+                        <input type="hidden" name="issueNumber" value="@issue.IssueNumber" />
+                        <input type="hidden" name="imageUrl" value="@issue.ImageUrl" />
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var issue in Model.Issues)
-            {
-                <tr>
-                    <td>
-                        <input type="radio" name="SelectedIssueId" value="@issue.Id" />
-                    </td>
-                    <td>@issue.Title</td>
-                    <td>@issue.IssueNumber</td>
-                    <td>
-                        <img src="@issue.ImageUrl" alt="@issue.Title" width="50" height="50" />
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <div class="form-group">
-        <input type="submit" value="Save" class="btn btn-primary" />
-   </div>
-</form>
+        }
+    </tbody>
+</table>
+>
+
