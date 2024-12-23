@@ -89,6 +89,7 @@ namespace MvcComic.Controllers
                                         issues.Add(new Comic
                                         {
                                             Title = result["name"]?.ToString(),
+                                            IssueNumber = result["issue_number"]?.ToString(),
                                             ImageUrl = result["image"]?["thumb_url"]?.ToString()
                                         });
                                     }
@@ -125,6 +126,7 @@ namespace MvcComic.Controllers
                 }
             }
         }
+
 
 
 

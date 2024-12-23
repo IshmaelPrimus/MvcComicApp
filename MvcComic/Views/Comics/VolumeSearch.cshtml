@@ -4,7 +4,11 @@
     ViewData["Title"] = "Volume Search";
 }
 
-<h2>Volume Search</h2>
+<h1>Volume Search</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
 
 <form asp-action="GetVolumeIssues" method="get">
     <div class="form-group">
@@ -14,27 +18,66 @@
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
 
-@if (Model?.Issues != null && Model.Issues.Any())
-{
-    <h3>Volume: @Model.VolumeTitle</h3>
-    <ul>
-        @foreach (var issue in Model.Issues)
-        {
-            <li>
-                <img src="@issue.ImageUrl" alt="@issue.Title" />
-                <span>@issue.Title</span>
-            </li>
-        }
-    </ul>
-}
-else if (!string.IsNullOrEmpty(Model?.VolumeTitle))
-{
-    <p>No issues found for this volume.</p>
-}
 
-@if (ViewData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @ViewData["ErrorMessage"]
-    </div>
-}
+
+    <h3>Volume: @Model.VolumeTitle</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Title)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ReleaseDate)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Issue)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Genre)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Price)
+                </th>
+                <th>
+                    Image
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var issue in Model.Issues)
+
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => issue.Title)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => issue.ReleaseDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => issue.Issue)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => issue.Genre)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => issue.Price)
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(issue.ImageUrl))
+
+                        {
+                            <img src="@issue.ImageUrl" alt="Comic Image" style="max-width: 100px; max-height: 100px;" />
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@issue.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@issue.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@issue.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>

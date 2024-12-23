@@ -1,4 +1,4 @@
-﻿@model MvcComic.Models.VolumeIssuesViewModel
+﻿@* @model MvcComic.Models.VolumeIssuesViewModel
 
 <h2>Volume: @Model.VolumeTitle</h2>
 
@@ -24,4 +24,44 @@ else
     <div class="alert alert-danger">
         @ViewData["ErrorMessage"]
     </div>
+} *@
+
+@model VolumeIssuesViewModel
+
+<h2>@Model.VolumeTitle</h2>
+
+@if (ViewData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@ViewData["ErrorMessage"]</div>
 }
+
+<form asp-action="VolumeSearch" method="post">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Select</th>
+                <th>Title</th>
+                <th>Issue Number</th>
+                <th>Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var issue in Model.Issues)
+            {
+                <tr>
+                    <td>
+                        <input type="radio" name="SelectedIssueId" value="@issue.Id" />
+                    </td>
+                    <td>@issue.Title</td>
+                    <td>@issue.IssueNumber</td>
+                    <td>
+                        <img src="@issue.ImageUrl" alt="@issue.Title" width="50" height="50" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <div class="form-group">
+        <input type="submit" value="Save" class="btn btn-primary" />
+   </div>
+</form>
