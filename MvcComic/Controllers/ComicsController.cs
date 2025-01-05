@@ -19,7 +19,7 @@ namespace MvcComic.Controllers
         public ComicsController(MvcComicContext context, IConfiguration configuration)
         {
             _context = context;
-            _apiKey = Environment.GetEnvironmentVariable("ComicVineApiKey");
+            _apiKey = Environment.GetEnvironmentVariable("ComicVineApiKey") ?? throw new InvalidOperationException("API key is missing or invalid.");
         }
 
         [HttpGet]

@@ -1,0 +1,15 @@
+﻿# Ignore launchSettings.json
+MvcComic/Properties/launchSettings.json
+
+# Ignore build outputs
+bin/
+obj/
+
+# Ignore user-specific files
+*.user
+*.suo
+
+# Ignore other common files
+.vscode/
+*.log
+*.DS_Store
