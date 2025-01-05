@@ -14,13 +14,13 @@ namespace MvcComic.Controllers
     public class ComicsController : Controller
     {
         private readonly MvcComicContext _context;
+        private readonly string _apiKey;
 
-        public ComicsController(MvcComicContext context)
+        public ComicsController(MvcComicContext context, IConfiguration configuration)
         {
             _context = context;
+            _apiKey = Environment.GetEnvironmentVariable("ComicVineApiKey");
         }
-
-        private readonly string _apiKey = "2194908e26505271c0a8b22937d61d9af0d9ac54";
 
         [HttpGet]
         [Route("Comics/GetVolumeIssues")]
