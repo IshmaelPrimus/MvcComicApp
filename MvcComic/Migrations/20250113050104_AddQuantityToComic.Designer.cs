@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MvcComic.Data;
 
@@ -10,9 +11,11 @@ using MvcComic.Data;
 namespace MvcComic.Migrations
 {
     [DbContext(typeof(MvcComicContext))]
-    partial class MvcComicContextModelSnapshot : ModelSnapshot
+    [Migration("20250113050104_AddQuantityToComic")]
+    partial class AddQuantityToComic
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -26,28 +26,32 @@ public static class SeedData
                     Volume = "A",
                     Title = "Test",
                     IssueNumber = "1",
-                    ImageUrl = "https://comicvine.gamespot.com/a/uploads/scale_avatar/0/3125/7709750-bat158.jpg"
+                    ImageUrl = "https://comicvine.gamespot.com/a/uploads/scale_avatar/0/3125/7709750-bat158.jpg",
+                    Quantity = 1
                 },
                 new Comic
                 {
                     Volume = "A",
                     Title = "Test",
                     IssueNumber = "2",
-                    ImageUrl = "https://comicvine.gamespot.com/a/uploads/scale_avatar/0/3125/7709750-bat158.jpg"
+                    ImageUrl = "https://comicvine.gamespot.com/a/uploads/scale_avatar/0/3125/7709750-bat158.jpg",
+                    Quantity = 2
                 },
                 new Comic
                 {
                     Volume = "A",
                     Title = "Test",
                     IssueNumber = "3",
-                    ImageUrl = "https://comicvine.gamespot.com/a/uploads/scale_avatar/0/3125/7709750-bat158.jpg"
+                    ImageUrl = "https://comicvine.gamespot.com/a/uploads/scale_avatar/0/3125/7709750-bat158.jpg",
+                    Quantity = 3
                 },
                 new Comic
                 {
                     Volume = "A",
                     Title = "Test",
                     IssueNumber = "4",
-                    ImageUrl = "https://comicvine.gamespot.com/a/uploads/scale_avatar/0/3125/7709750-bat158.jpg"
+                    ImageUrl = "https://comicvine.gamespot.com/a/uploads/scale_avatar/0/3125/7709750-bat158.jpg",
+                    Quantity = 4
                 }
             );
             context.SaveChanges();

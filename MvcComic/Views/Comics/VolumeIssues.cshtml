@@ -1,83 +1,36 @@
-﻿@* @model MvcComic.Models.VolumeIssuesViewModel
+﻿@model VolumeIssuesViewModel
 
-<h2>Volume: @Model.VolumeTitle</h2>
+<h2>@Model.VolumeTitle</h2>
 
-@if (Model.Issues.Any())
-{
-    <ul>
-        @foreach (var issue in Model.Issues)
-        {
-            <li>
-                <img src="@issue.ImageUrl" alt="@issue.Title" />
-                <span>@issue.Title</span>
-            </li>
-        }
-    </ul>
-}
-else
-{
-    <p>No issues found for this volume.</p>
-}
-
-@if (ViewData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @ViewData["ErrorMessage"]
-    </div>
-} *@
-
-@model VolumeIssuesViewModel
-
-@{
-    ViewData["Title"] = "Volume Issues";
-}
-
-<h2>@ViewData["Title"]</h2>
-
-@if (TempData["ErrorMessage"] != null)
-{
-    <div class="alert alert-danger">
-        @TempData["ErrorMessage"]
-    </div>
-}
-
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success">
-        @TempData["SuccessMessage"]
-    </div>
-}
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>Title</th>
-            <th>Issue Number</th>
-            <th>Image</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var issue in Model.Issues)
-        {
+<form asp-action="AddSelectedIssue" method="post">
+    <table class="table">
+        <thead>
             <tr>
-                <td>@issue.Title</td>
-                <td>@issue.IssueNumber</td>
-                <td>
-                    <img src="@issue.ImageUrl" alt="@issue.Title" width="50" height="50" />
-                </td>
-                <td>
-                    <form asp-action="AddSelectedIssue" method="post">
-                        <input type="hidden" name="volumeTitle" value="@Model.VolumeTitle" />
-                        <input type="hidden" name="title" value="@issue.Title" />
-                        <input type="hidden" name="issueNumber" value="@issue.IssueNumber" />
-                        <input type="hidden" name="imageUrl" value="@issue.ImageUrl" />
-                        <button type="submit" class="btn btn-primary">Save</button>
-                    </form>
-                </td>
+                <th>Title</th>
+                <th>Issue Number</th>
+                <th>Image</th>
+                <th>Quantity</th>
+                <th>Select</th>
             </tr>
-        }
-    </tbody>
-</table>
->
+        </thead>
+        <tbody>
+            @foreach (var issue in Model.Issues)
+            {
+                <tr>
+                    <td>@issue.Title</td>
+                    <td>@issue.IssueNumber</td>
+                    <td><img src="@issue.ImageUrl" alt="@issue.Title" width="50" /></td>
+                    <td>
+                        <input type="number" name="quantities[@issue.Id]" value="0" min="0" class="form-control" />
+                    </td>
+                    <td>
+                        <input type="checkbox" name="selectedIssues" value="@issue.Id" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <button type="submit" class="btn btn-primary">Add Selected Issues</button>
+</form>
+
 

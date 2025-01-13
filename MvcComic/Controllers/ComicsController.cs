@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using MvcComic.Data;
 using MvcComic.Models;
@@ -24,7 +25,7 @@ namespace MvcComic.Controllers
 
         [HttpGet]
         [Route("Comics/GetVolumeIssues")]
-        public async Task<IActionResult> GetVolumeIssues(string volumeName)
+        public async Task<IActionResult> GetVolumeIssues(string volumeName, int itemCount)
         {
             if (string.IsNullOrEmpty(_apiKey))
             {
@@ -108,7 +109,8 @@ namespace MvcComic.Controllers
                         var viewModel = new VolumeIssuesViewModel
                         {
                             VolumeTitle = volumeTitle,
-                            Issues = issues
+                            Issues = issues,
+                            ItemCount = itemCount
                         };
 
                         return View("VolumeIssues", viewModel);
@@ -242,41 +244,43 @@ namespace MvcComic.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddSelectedIssue(string volumeTitle, string title, string issueNumber, string imageUrl)
+        public async Task<IActionResult> AddSelectedIssue(string[] selectedIssues, Dictionary<int, int> quantities)
         {
-            // Log the incoming data
-            Console.WriteLine($"VolumeTitle={volumeTitle}, Title={title}, IssueNumber={issueNumber}, ImageUrl={imageUrl}");
-
-            if (string.IsNullOrEmpty(title) || string.IsNullOrEmpty(issueNumber))
+            foreach (var issueId in selectedIssues)
             {
-                TempData["ErrorMessage"] = "Issue data is invalid.";
-                return RedirectToAction("VolumeSearch");
-            }
-
-            var existingIssue = await _context.Comic.FirstOrDefaultAsync(c =>
-                c.Title == title && c.IssueNumber == issueNumber);
-
-            if (existingIssue == null)
-            {
-                var newComic = new Comic
+                if (int.TryParse(issueId, out int parsedIssueId))
                 {
-                    Title = title,
-                    IssueNumber = issueNumber,
-                    ImageUrl = imageUrl,
-                    Volume = volumeTitle
-                };
+                    var issue = await _context.Comic.FindAsync(parsedIssueId);
+                    if (issue != null)
+                    {
+                        if (quantities.TryGetValue(parsedIssueId, out int quantity))
+                        {
+                            for (int i = 0; i < quantity; i++)
+                            {
+                                var newComic = new Comic
+                                {
+                                    Title = issue.Title,
+                                    Volume = issue.Volume,
+                                    IssueNumber = issue.IssueNumber,
+                                    ImageUrl = issue.ImageUrl,
+                                    Quantity = 1 // Each entry represents one issue
+                                };
+                                _context.Comic.Add(newComic);
+                            }
+                        }
+                    }
+                }
+            }
 
-                _context.Comic.Add(newComic);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "The selected issue has been successfully added to the database.";
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "The selected issue already exists in the database.";
-            }
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "The selected issues have been successfully added to the database.";
 
             return RedirectToAction("VolumeSearch");
         }
+
+
+
+
 
 
 

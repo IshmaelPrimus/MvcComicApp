@@ -15,60 +15,72 @@
         <label for="volumeName">Volume Name</label>
         <input type="text" class="form-control" id="volumeName" name="volumeName" required />
     </div>
+    <div class="form-group">
+        <label for="itemCount">Item Count</label>
+        <input type="number" class="form-control" id="itemCount" name="itemCount" value="@Model.ItemCount" required />
+    </div>
+    <div class="form-group">
+        <label for="quantity">Quantity</label>
+        <input type="number" class="form-control" id="quantity" name="quantity" required />
+    </div>
     <button type="submit" class="btn btn-primary">Search</button>
 </form>
 
+<h3>Volume: @Model.VolumeTitle</h3>
 
+@if (Model.Issues != null && Model.Issues.Any())
 
-    <h3>Volume: @Model.VolumeTitle</h3>
-    <table class="table">
-        <thead>
+{
+    <p>Total Issues: @Model.Issues.Count</p>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Volume)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IssueNumber)
+            </th>
+            <th>
+                Image
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var issue in Model.Issues)
+
+        {
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Volume)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Title)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.IssueNumber)
-                </th>
-                <th>
-                    Image
-                </th>
-                <th></th>
+                <td>
+                    @Html.DisplayFor(modelItem => issue.Volume)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => issue.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => issue.IssueNumber)
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(issue.ImageUrl))
+                    {
+                        <img src="@issue.ImageUrl" alt="Comic Image" style="max-width: 100px; max-height: 100px;" />
+                    }
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@issue.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@issue.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@issue.Id">Delete</a>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var issue in Model.Issues)
-
-            {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => issue.Volume)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => issue.Title)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => issue.IssueNumber)
-                    </td>
-                    <td>
-                        @if (!string.IsNullOrEmpty(issue.ImageUrl))
-
-                        {
-                            <img src="@issue.ImageUrl" alt="Comic Image" style="max-width: 100px; max-height: 100px;" />
-                        }
-                    </td>
-                    <td>
-                        <a asp-action="Edit" asp-route-id="@issue.Id">Edit</a> |
-                        <a asp-action="Details" asp-route-id="@issue.Id">Details</a> |
-                        <a asp-action="Delete" asp-route-id="@issue.Id">Delete</a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+        }
+    </tbody>
+</table>
 
 @{
     var successMessage = TempData["SuccessMessage"] as string;
@@ -91,4 +103,3 @@
         @errorMessage
     </div>
 }
-

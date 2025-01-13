@@ -12,4 +12,6 @@ public class Comic
     //public DateTime ReleaseDate { get; set; }
     public string? IssueNumber { get; set; }
     public string? ImageUrl { get; set; }
+
+    public int Quantity { get; set; }
 }

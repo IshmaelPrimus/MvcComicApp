@@ -14,4 +14,6 @@ public class VolumeIssuesViewModel
     public string? IssueNumber { get; set; }
 
     public string? ImageUrl { get; set; }
+
+    public int ItemCount { get; set; }
 }
