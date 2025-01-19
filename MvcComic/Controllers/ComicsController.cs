@@ -245,36 +245,49 @@ namespace MvcComic.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddSelectedIssue(string selectedIssue)
+        public async Task<IActionResult> AddSelectedIssue(string volumeTitle, string title, string issueNumber, string imageUrl)
         {
-            if (int.TryParse(selectedIssue, out int parsedIssueId))
+            // Log the incoming data
+            Console.WriteLine($"VolumeTitle={volumeTitle}, Title={title}, IssueNumber={issueNumber}, ImageUrl={imageUrl}");
+
+            // Validate the input parameters
+            if (string.IsNullOrEmpty(title))
             {
-                var issue = await _context.Comic.FindAsync(parsedIssueId);
-                if (issue != null)
+                TempData["ErrorMessage"] = "Title is required.";
+                return RedirectToAction("VolumeSearch");
+            }
+
+            if (string.IsNullOrEmpty(issueNumber))
+            {
+                TempData["ErrorMessage"] = "Issue number is required.";
+                return RedirectToAction("VolumeSearch");
+            }
+
+            var existingIssue = await _context.Comic.FirstOrDefaultAsync(c =>
+                c.Title == title && c.IssueNumber == issueNumber);
+
+            if (existingIssue == null)
+            {
+                var newComic = new Comic
                 {
-                    var newComic = new Comic
-                    {
-                        Title = issue.Title,
-                        Volume = issue.Volume,
-                        IssueNumber = issue.IssueNumber,
-                        ImageUrl = issue.ImageUrl,
-                    };
-                    _context.Comic.Add(newComic);
-                    await _context.SaveChangesAsync();
-                    TempData["SuccessMessage"] = "The selected issue has been successfully added to the database.";
-                }
-                else
-                {
-                    TempData["ErrorMessage"] = "The selected issue could not be found.";
-                }
+                    Title = title,
+                    IssueNumber = issueNumber,
+                    ImageUrl = imageUrl,
+                    Volume = volumeTitle
+                };
+
+                _context.Comic.Add(newComic);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "The selected issue has been successfully added to the database.";
             }
             else
             {
-                TempData["ErrorMessage"] = "Invalid issue ID.";
+                TempData["ErrorMessage"] = "The selected issue already exists in the database.";
             }
 
             return RedirectToAction("VolumeSearch");
         }
+
 
 
 

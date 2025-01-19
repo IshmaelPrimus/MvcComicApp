@@ -20,7 +20,10 @@
                 <td><img src="@issue.ImageUrl" alt="@issue.Title" width="50" /></td>
                 <td>
                     <form asp-action="AddSelectedIssue" method="post">
-                        <input type="hidden" name="selectedIssue" value="@issue.Id" />
+                        <input type="hidden" name="volumeTitle" value="@Model.VolumeTitle" />
+                        <input type="hidden" name="title" value="@issue.Title" />
+                        <input type="hidden" name="issueNumber" value="@issue.IssueNumber" />
+                        <input type="hidden" name="imageUrl" value="@issue.ImageUrl" />
                         <button type="submit" class="btn btn-primary">Select</button>
                     </form>
                 </td>
