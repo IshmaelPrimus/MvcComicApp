@@ -15,6 +15,7 @@ namespace MvcComic.Controllers
     public class ComicsController : Controller
     {
         private readonly MvcComicContext _context;
+
         private readonly string _apiKey;
 
         public ComicsController(MvcComicContext context, IConfiguration configuration)
@@ -25,7 +26,7 @@ namespace MvcComic.Controllers
 
         [HttpGet]
         [Route("Comics/GetVolumeIssues")]
-        public async Task<IActionResult> GetVolumeIssues(string volumeName, int itemCount)
+        public async Task<IActionResult> GetVolumeIssues(string volumeName)
         {
             if (string.IsNullOrEmpty(_apiKey))
             {
@@ -109,8 +110,8 @@ namespace MvcComic.Controllers
                         var viewModel = new VolumeIssuesViewModel
                         {
                             VolumeTitle = volumeTitle,
-                            Issues = issues,
-                            ItemCount = itemCount
+                            Issues = issues
+                
                         };
 
                         return View("VolumeIssues", viewModel);
@@ -244,39 +245,38 @@ namespace MvcComic.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddSelectedIssue(string[] selectedIssues, Dictionary<int, int> quantities)
+        public async Task<IActionResult> AddSelectedIssue(string selectedIssue)
         {
-            foreach (var issueId in selectedIssues)
+            if (int.TryParse(selectedIssue, out int parsedIssueId))
             {
-                if (int.TryParse(issueId, out int parsedIssueId))
+                var issue = await _context.Comic.FindAsync(parsedIssueId);
+                if (issue != null)
                 {
-                    var issue = await _context.Comic.FindAsync(parsedIssueId);
-                    if (issue != null)
+                    var newComic = new Comic
                     {
-                        if (quantities.TryGetValue(parsedIssueId, out int quantity))
-                        {
-                            for (int i = 0; i < quantity; i++)
-                            {
-                                var newComic = new Comic
-                                {
-                                    Title = issue.Title,
-                                    Volume = issue.Volume,
-                                    IssueNumber = issue.IssueNumber,
-                                    ImageUrl = issue.ImageUrl,
-                                    Quantity = 1 // Each entry represents one issue
-                                };
-                                _context.Comic.Add(newComic);
-                            }
-                        }
-                    }
+                        Title = issue.Title,
+                        Volume = issue.Volume,
+                        IssueNumber = issue.IssueNumber,
+                        ImageUrl = issue.ImageUrl,
+                    };
+                    _context.Comic.Add(newComic);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "The selected issue has been successfully added to the database.";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "The selected issue could not be found.";
                 }
             }
-
-            await _context.SaveChangesAsync();
-            TempData["SuccessMessage"] = "The selected issues have been successfully added to the database.";
+            else
+            {
+                TempData["ErrorMessage"] = "Invalid issue ID.";
+            }
 
             return RedirectToAction("VolumeSearch");
         }
+
+
 
 
 

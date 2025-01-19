@@ -2,35 +2,30 @@
 
 <h2>@Model.VolumeTitle</h2>
 
-<form asp-action="AddSelectedIssue" method="post">
-    <table class="table">
-        <thead>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Issue Number</th>
+            <th>Image</th>
+            <th>Select</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var issue in Model.Issues)
+        {
             <tr>
-                <th>Title</th>
-                <th>Issue Number</th>
-                <th>Image</th>
-                <th>Quantity</th>
-                <th>Select</th>
+                <td>@issue.Title</td>
+                <td>@issue.IssueNumber</td>
+                <td><img src="@issue.ImageUrl" alt="@issue.Title" width="50" /></td>
+                <td>
+                    <form asp-action="AddSelectedIssue" method="post">
+                        <input type="hidden" name="selectedIssue" value="@issue.Id" />
+                        <button type="submit" class="btn btn-primary">Select</button>
+                    </form>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var issue in Model.Issues)
-            {
-                <tr>
-                    <td>@issue.Title</td>
-                    <td>@issue.IssueNumber</td>
-                    <td><img src="@issue.ImageUrl" alt="@issue.Title" width="50" /></td>
-                    <td>
-                        <input type="number" name="quantities[@issue.Id]" value="0" min="0" class="form-control" />
-                    </td>
-                    <td>
-                        <input type="checkbox" name="selectedIssues" value="@issue.Id" />
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
-    <button type="submit" class="btn btn-primary">Add Selected Issues</button>
-</form>
-
+        }
+    </tbody>
+</table>
 

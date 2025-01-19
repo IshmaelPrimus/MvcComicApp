@@ -7,9 +7,9 @@ using MvcComic.Models;
 
 namespace MvcComic.Data
 {
-    public class MvcComicContext : DbContext
+    public class MvcComicContext2 : DbContext
     {
-        public MvcComicContext (DbContextOptions<MvcComicContext> options)
+        public MvcComicContext2(DbContextOptions<MvcComicContext2> options)
             : base(options)
         {
         }
