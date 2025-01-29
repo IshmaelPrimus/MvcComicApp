@@ -243,12 +243,53 @@ namespace MvcComic.Controllers
             return View();
         }
 
+        /*        [HttpPost]
+                [ValidateAntiForgeryToken]
+                public async Task<IActionResult> AddSelectedIssue(string volumeTitle, string title, string issueNumber, string imageUrl)
+                {
+                    // Log the incoming data
+                    Console.WriteLine($"VolumeTitle={volumeTitle}, Title={title}, IssueNumber={issueNumber}, ImageUrl={imageUrl}");
+
+                    // Validate the input parameters
+                    if (string.IsNullOrEmpty(title))
+                    {
+                        TempData["ErrorMessage"] = "Title is required.";
+                        return RedirectToAction("VolumeSearch");
+                    }
+
+                    if (string.IsNullOrEmpty(issueNumber))
+                    {
+                        TempData["ErrorMessage"] = "Issue number is required.";
+                        return RedirectToAction("VolumeSearch");
+                    }
+
+                    var existingIssue = await _context.Comic.FirstOrDefaultAsync(c =>
+                        c.Title == title && c.IssueNumber == issueNumber);
+
+
+                    {
+                        var newComic = new Comic
+                        {
+                            Title = title,
+                            IssueNumber = issueNumber,
+                            ImageUrl = imageUrl,
+                            Volume = volumeTitle
+                        };
+
+                        _context.Comic.Add(newComic);
+                        await _context.SaveChangesAsync();
+                        TempData["SuccessMessage"] = "The selected issue has been successfully added to the database.";
+                    }
+                    return RedirectToAction("VolumeSearch");
+                }*/
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddSelectedIssue(string volumeTitle, string title, string issueNumber, string imageUrl)
+        public async Task<IActionResult> AddSelectedIssue(string volumeTitle, string title, string issueNumber, string imageUrl, int quantity)
         {
             // Log the incoming data
-            Console.WriteLine($"VolumeTitle={volumeTitle}, Title={title}, IssueNumber={issueNumber}, ImageUrl={imageUrl}");
+            Console.WriteLine($"VolumeTitle={volumeTitle}, Title={title}, IssueNumber={issueNumber}, ImageUrl={imageUrl}, Quantity={quantity}");
 
             // Validate the input parameters
             if (string.IsNullOrEmpty(title))
@@ -263,32 +304,30 @@ namespace MvcComic.Controllers
                 return RedirectToAction("VolumeSearch");
             }
 
-            var existingIssue = await _context.Comic.FirstOrDefaultAsync(c =>
-                c.Title == title && c.IssueNumber == issueNumber);
+            if (quantity <= 0)
+            {
+                TempData["ErrorMessage"] = "Quantity must be greater than zero.";
+                return RedirectToAction("VolumeSearch");
+            }
 
-            if (existingIssue == null)
+            for (int i = 0; i < quantity; i++)
             {
                 var newComic = new Comic
                 {
                     Title = title,
                     IssueNumber = issueNumber,
                     ImageUrl = imageUrl,
-                    Volume = volumeTitle
+                    Volume = volumeTitle,
+                    Quantity = 1 // Each entry represents a single issue
                 };
 
                 _context.Comic.Add(newComic);
-                await _context.SaveChangesAsync();
-                TempData["SuccessMessage"] = "The selected issue has been successfully added to the database.";
-            }
-            else
-            {
-                TempData["ErrorMessage"] = "The selected issue already exists in the database.";
             }
 
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "The selected issues have been successfully added to the database.";
             return RedirectToAction("VolumeSearch");
         }
-
-
 
 
 
