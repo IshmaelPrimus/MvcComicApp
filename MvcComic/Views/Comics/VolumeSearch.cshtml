@@ -30,7 +30,13 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.IssueNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
                 Image
@@ -49,12 +55,18 @@
                     @Html.DisplayFor(modelItem => issue.Title)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => issue.Id)
+                </td>
+                <td>
                     @Html.DisplayFor(modelItem => issue.IssueNumber)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => issue.Description)
                 </td>
                 <td>
                     @if (!string.IsNullOrEmpty(issue.ImageUrl))
                     {
-                        <img src="@issue.ImageUrl" alt="Comic Image" style="max-width: 100px; max-height: 100px;" />
+                        <img src="@issue.ImageUrl" alt="Comic Image" style="max-width: 75px; max-height: 75px;" />
                     }
                 </td>
                 <td>

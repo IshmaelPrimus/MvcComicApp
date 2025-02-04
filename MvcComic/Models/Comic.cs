@@ -13,5 +13,8 @@ public class Comic
     public string? IssueNumber { get; set; }
     public string? ImageUrl { get; set; }
 
+    [MaxLength(100)]
+    public string? Description { get; set; }    
+
     public int Quantity { get; set; }
 }

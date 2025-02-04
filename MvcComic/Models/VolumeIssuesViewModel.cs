@@ -15,4 +15,7 @@ public class VolumeIssuesViewModel
     public string? IssueNumber { get; set; }
 
     public string? ImageUrl { get; set; }
+
+    [MaxLength(100)]
+    public string? Description { get; set; }
 }

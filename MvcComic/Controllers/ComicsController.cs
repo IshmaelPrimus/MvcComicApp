@@ -381,47 +381,22 @@ namespace MvcComic.Controllers
         // POST: Comics/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,ReleaseDate,Issue,Genre,Price")] Comic comic)
+        public async Task<IActionResult> Edit(int id, string description)
         {
-            if (id != comic.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
+            
+                var comic = await _context.Comic.FindAsync(id);
+                if (comic == null)
                 {
-                    var existingComic = await _context.Comic.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
-                    if (existingComic == null)
-                    {
-                        return NotFound();
-                    }
-
-                    bool titleChanged = !string.Equals(existingComic.Title, comic.Title, StringComparison.OrdinalIgnoreCase);
-
-                    _context.Update(comic);
-                    await _context.SaveChangesAsync();
-
-                    if (titleChanged)
-                    {
-                        return RedirectToAction(nameof(GetComicImage), new { issueName = comic.Title });
-                    }
+                    return NotFound();
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ComicExists(comic.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(comic);
+
+                comic.Description = description;
+                _context.Update(comic);
+                await _context.SaveChangesAsync();
+
+                TempData["SuccessMessage"] = "Description updated successfully!";
+                return RedirectToAction(nameof(GetVolumeIssues), new { volumeName = comic.Volume });
+            
         }
 
 
